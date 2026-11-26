@@ -1,5 +1,13 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000/api";
+const getApiBaseUrl = (): string => {
+  let url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000/api";
+  url = url.trim().replace(/\/+$/, "");
+  if (!url.endsWith("/api")) {
+    url = `${url}/api`;
+  }
+  return url;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 interface RequestOptions extends RequestInit {
   data?: any;

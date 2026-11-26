@@ -18,15 +18,35 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 9000;
 
-// Middleware
+// 1. CORS Middleware (MUST be first before any other middleware or route handling)
+app.use(
+  cors({
+    origin: true, // Automatically reflect request origin (supports vercel.app, localhost, custom domains)
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Origin",
+      "X-Requested-With",
+      "Content-Type",
+      "Accept",
+      "Authorization",
+      "Cookie",
+      "x-client-platform",
+      "x-client-version",
+    ],
+    exposedHeaders: ["Set-Cookie"],
+  })
+);
+
+// Explicitly handle all preflight OPTIONS requests across all routes
+app.options("*", cors({ origin: true, credentials: true }));
+
+// 2. Body Parser & Cookie Middleware
 app.use(
   express.json({
     limit: "50mb", // Increase JSON payload limit to 50MB
   }),
-
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    // Log the request method and URL
-    // console.log(`pass 1`);
     next();
   }
 );
@@ -36,42 +56,10 @@ app.use(
     extended: true,
   }),
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    // Log the request method and URL
-    // console.log(`pass 2`);
     next();
   }
-); // Also increase URL-encoded payload limit
-app.use(cookieParser());
-const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim())
-  : ["http://localhost:3000"];
-
-console.log("allowedOrigins", allowedOrigins);
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, etc.)
-      if (!origin) return callback(null, true);
-
-      // If CORS_ORIGIN is '*' or includes '*', or matches vercel.app, allow the exact origin
-      if (
-        !process.env.CORS_ORIGIN ||
-        process.env.CORS_ORIGIN === "*" ||
-        allowedOrigins.includes("*") ||
-        allowedOrigins.includes(origin) ||
-        origin.endsWith(".vercel.app") ||
-        origin.includes("localhost")
-      ) {
-        return callback(null, true);
-      }
-      return callback(null, true);
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
-  })
 );
+app.use(cookieParser());
 
 // Update file upload middleware config for larger files and better error handling
 app.use(

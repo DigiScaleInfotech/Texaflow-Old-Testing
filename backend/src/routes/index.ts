@@ -38,14 +38,17 @@ export const setupRoutes = (app: Express) => {
     res.json({ status: "OK", timestamp: new Date() });
   });
   
-  // Auth routes (no authentication middleware applied here)
+  // Auth routes (mounted on both /api/auth and /auth for compatibility)
   app.use("/api/auth", authRoutes);
+  app.use("/auth", authRoutes);
 
   // User routes
   app.use("/api/users", userRoutes);
+  app.use("/users", userRoutes);
   
   // Organization routes
   app.use("/api/organizations", organizationRoutes);
+  app.use("/organizations", organizationRoutes);
   
   // Invoice settings routes
   app.use("/api/invoice-settings", invoiceSettingsRoutes);
