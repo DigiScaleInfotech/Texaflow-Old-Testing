@@ -1,5 +1,19 @@
 const getApiBaseUrl = (): string => {
-  let url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9000/api";
+  if (typeof window !== "undefined") {
+    // If running in development on localhost, keep localhost URL if specified
+    if (
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") &&
+      process.env.NEXT_PUBLIC_API_URL &&
+      process.env.NEXT_PUBLIC_API_URL.includes("localhost")
+    ) {
+      let localUrl = process.env.NEXT_PUBLIC_API_URL.trim().replace(/\/+$/, "");
+      return localUrl.endsWith("/api") ? localUrl : `${localUrl}/api`;
+    }
+    // In production browser, use relative "/api" path so Next.js server-side rewrites proxy it.
+    // This completely eliminates cross-origin CORS errors and preflight failures!
+    return "/api";
+  }
+  let url = process.env.NEXT_PUBLIC_API_URL || "https://texaflow-old-testing.onrender.com/api";
   url = url.trim().replace(/\/+$/, "");
   if (!url.endsWith("/api")) {
     url = `${url}/api`;
