@@ -19,7 +19,7 @@ const {
 const useSsl =
   process.env.DB_SSL === "true" ||
   NODE_ENV === "production" ||
-  Boolean(DB_HOST && DB_HOST.includes("supabase.co"));
+  Boolean(DB_HOST && (DB_HOST.includes("supabase.co") || DB_HOST.includes("supabase.com")));
 
 // Create and export the TypeORM DataSource
 export const AppDataSource = new DataSource({

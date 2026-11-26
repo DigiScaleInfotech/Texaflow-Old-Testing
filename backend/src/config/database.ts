@@ -21,7 +21,7 @@ dotenv.config();
 const useSsl =
   process.env.DB_SSL === "true" ||
   process.env.NODE_ENV === "production" ||
-  Boolean(process.env.DB_HOST && process.env.DB_HOST.includes("supabase.co"));
+  Boolean(process.env.DB_HOST && (process.env.DB_HOST.includes("supabase.co") || process.env.DB_HOST.includes("supabase.com")));
 
 export const config = {
   type: "postgres" as const,

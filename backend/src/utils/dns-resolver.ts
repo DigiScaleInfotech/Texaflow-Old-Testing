@@ -1,6 +1,6 @@
 import dns from "dns";
 
-// Pre-cached IPv6 for Supabase project gqhaqiuqraggumqohvvv
+// Pre-cached IPv6 for Supabase project gqhaqiuqraggumqohvvv (local dev fallback only)
 let cachedIps: string[] = ["2406:da14:1772:ea00:33d8:dae9:3ce8:1d9"];
 
 const originalLookup = dns.lookup.bind(dns);
@@ -9,6 +9,15 @@ const originalLookup = dns.lookup.bind(dns);
   if (typeof options === "function") {
     callback = options;
     options = {};
+  }
+
+  // Do NOT intercept connection pooler or production Render environment
+  if (
+    process.env.RENDER ||
+    process.env.NODE_ENV === "production" ||
+    (hostname && hostname.includes("pooler.supabase.com"))
+  ) {
+    return originalLookup(hostname, options, callback);
   }
 
   if (hostname && hostname.includes("supabase.co")) {
