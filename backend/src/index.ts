@@ -18,28 +18,31 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 9000;
 
-// 1. CORS Middleware (MUST be first before any other middleware or route handling)
-app.use(
-  cors({
-    origin: true, // Automatically reflect request origin (supports vercel.app, localhost, custom domains)
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: [
-      "Origin",
-      "X-Requested-With",
-      "Content-Type",
-      "Accept",
-      "Authorization",
-      "Cookie",
-      "x-client-platform",
-      "x-client-version",
-    ],
-    exposedHeaders: ["Set-Cookie"],
-  })
-);
+// 1. Bulletproof CORS Header Middleware (Handles all direct and preflight requests)
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const origin = req.headers.origin as string;
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cookie, x-client-platform, x-client-version"
+  );
+  res.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
 
-// Explicitly handle all preflight OPTIONS requests across all routes
-app.options("*", cors({ origin: true, credentials: true }));
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+  next();
+});
 
 // 2. Body Parser & Cookie Middleware
 app.use(
