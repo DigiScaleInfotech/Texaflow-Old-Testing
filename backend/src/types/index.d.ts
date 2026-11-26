@@ -7,7 +7,7 @@ declare global {
       user?: any;
       jwtPayload?: {
         userId: string;
-        role: string | UserRole;
+        role: any;
         organizationId?: string;
         sessionKey?: string;
       };

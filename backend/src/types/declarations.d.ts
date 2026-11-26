@@ -7,9 +7,7 @@ declare module "cookie-parser";
 declare module "express-fileupload";
 declare module "node-cron";
 declare module "nodemailer";
-declare module "ws";
 declare module "bcrypt";
-declare module "multer";
 
 declare module "jsonwebtoken" {
   export interface JwtPayload {

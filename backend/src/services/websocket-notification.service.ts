@@ -11,12 +11,12 @@ import {
 
 interface WebSocketClient {
   userId: string;
-  connection: WebSocket;
+  connection: any;
   sessionId: string;
 }
 
 export class WebSocketNotificationService {
-  private static wss: WebSocket.Server;
+  private static wss: any;
   private static clients: Map<string, WebSocketClient[]> = new Map();
   private static initialized: boolean = false;
 
@@ -40,14 +40,14 @@ export class WebSocketNotificationService {
         const pathname = url.parse(request.url || "").pathname;
 
         if (pathname === "/ws/notifications") {
-          this.wss.handleUpgrade(request, socket, head, (ws) => {
+          this.wss.handleUpgrade(request, socket, head, (ws: any) => {
             this.wss.emit("connection", ws, request);
           });
         }
       });
 
       // Handle new connections
-      this.wss.on("connection", (ws, request) => {
+      this.wss.on("connection", (ws: any, request: any) => {
         // Extract token from URL parameters
         const requestUrl = url.parse(request.url || "", true);
         const token = requestUrl.query.token as string;
@@ -63,7 +63,7 @@ export class WebSocketNotificationService {
 
       // Set up heartbeat interval to keep connections alive
       setInterval(() => {
-        this.wss.clients.forEach((ws) => {
+        this.wss.clients.forEach((ws: any) => {
           if ((ws as any).isAlive === false) {
             return ws.terminate();
           }
@@ -87,7 +87,7 @@ export class WebSocketNotificationService {
    */
   private static async authenticateClient(
     token: string,
-    ws: WebSocket
+    ws: any
   ): Promise<void> {
     try {
       // In a real application, you'd verify the JWT token
@@ -135,7 +135,7 @@ export class WebSocketNotificationService {
       );
 
       // Handle disconnect
-      ws.on("close", () => {
+      (ws as any).on("close", () => {
         this.removeClient(userId, sessionId);
         console.log(
           `Client disconnected: User ${userId}, Session ${sessionId}`
@@ -143,7 +143,7 @@ export class WebSocketNotificationService {
       });
 
       // Handle pong for heartbeat
-      ws.on("pong", () => {
+      (ws as any).on("pong", () => {
         (ws as any).isAlive = true;
       });
 
@@ -292,8 +292,8 @@ export class WebSocketNotificationService {
         timestamp: new Date().toISOString(),
       });
 
-      this.wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
+      this.wss.clients.forEach((client: any) => {
+        if (client.readyState === 1 || client.readyState === WebSocket.OPEN) {
           client.send(payload);
         }
       });

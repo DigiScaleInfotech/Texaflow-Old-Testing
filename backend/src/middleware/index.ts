@@ -89,7 +89,7 @@ export function protectedRoute(
 ): void {
   // Convert authenticate to RequestHandler to satisfy TypeScript
   const authMiddleware: RequestHandler = (req, res, next) => {
-    authenticate(req, res, next);
+    authenticate(req as any, res, next);
   };
 
   switch (method.toLowerCase()) {
@@ -121,11 +121,11 @@ export function adminRoute(
 ): void {
   // Convert middleware to RequestHandler to satisfy TypeScript
   const authMiddleware: RequestHandler = (req, res, next) => {
-    authenticate(req, res, next);
+    authenticate(req as any, res, next);
   };
 
   const adminMiddleware: RequestHandler = (req, res, next) => {
-    isAdmin(req, res, next);
+    isAdmin(req as any, res, next);
   };
 
   switch (method.toLowerCase()) {
@@ -165,7 +165,7 @@ export function indexedRoute(
   handler: RouteHandler
 ): void {
   const authMiddleware: RequestHandler = (req, res, next) => {
-    authenticate(req, res, next);
+    authenticate(req as any, res, next);
   };
 
   // Set performance headers and query optimization
@@ -195,15 +195,15 @@ export function indexedSearchRoute(
   handler: RouteHandler
 ): void {
   const authMiddleware: RequestHandler = (req, res, next) => {
-    authenticate(req, res, next);
+    authenticate(req as any, res, next);
   };
 
   const searchValidationMiddleware: RequestHandler = (req, res, next) => {
-    validateSearch(req, res, next);
+    validateSearch(req as any, res, next);
   };
 
   const ownerFilterMiddleware: RequestHandler = (req, res, next) => {
-    applyOwnerFilter(entityName)(req, res, next);
+    applyOwnerFilter(entityName)(req as any, res, next);
   };
 
   app.get(
