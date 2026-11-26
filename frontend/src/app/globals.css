@@ -1,0 +1,141 @@
+@import '@fontsource/josefin-sans';
+@import '@fontsource/jost';
+@import '@fontsource/plus-jakarta-sans/300.css';
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/500.css';
+@import '@fontsource/plus-jakarta-sans/600.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  /* Dark mode variables */
+  --background-dark: 222.2 84% 4.9%;
+  --foreground-dark: 210 40% 98%;
+  
+  /* Light mode variables */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 210 40% 98%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+}
+
+body {
+  @apply transition-colors duration-300 font-['Plus_Jakarta_Sans'];
+}
+
+.dark body {
+  background: #202936;
+  color: hsl(var(--foreground-dark));
+}
+
+body {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: hsl(var(--foreground));
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-['Plus_Jakarta_Sans'] font-semibold;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  @apply transition-all duration-300;
+}
+
+.dark .glass-card {
+  background: #202936;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.glass-card {
+  background: rgb(243, 241, 241);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Auth specific styles */
+.auth-input {
+  @apply bg-gray-800 border-gray-700 text-white placeholder-gray-400;
+}
+
+.auth-label {
+  @apply text-gray-300;
+}
+
+/* Add scrollbar hiding utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Add these chart grid styles */
+.dark canvas {
+  --chart-grid-color: rgba(255, 255, 255, 0.1);
+  background: #202936;
+}
+
+canvas {
+  --chart-grid-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Bulletproof Print Rules for A5 Documents */
+@media print {
+  @page {
+    size: A5 portrait;
+    margin: 4mm;
+  }
+  
+  html, body, #__next, main {
+    background: white !important;
+    background-image: none !important;
+    color: black !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  nav,
+  aside,
+  header,
+  footer,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print-page {
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    background: white !important;
+  }
+
+  .print-bill {
+    border: 1px solid black !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+}

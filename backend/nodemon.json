@@ -1,0 +1,9 @@
+{
+  "watch": ["src", ".env", ".env.local"],
+  "ext": "ts,js,json",
+  "ignore": ["node_modules"],
+  "exec": "ts-node -r dotenv/config --prefer-ts-exts src/index.ts dotenv_config_path=.env.local",
+  "restartable": "rs",
+  "verbose": true,
+  "delay": "1000"
+}

@@ -1,0 +1,61 @@
+services:
+  # ==========================================================
+  # 1. TEXA BACKEND (Node.js Express + TypeORM + Supabase PostgreSQL)
+  # ==========================================================
+  - type: web
+    name: texa-backend
+    runtime: node
+    rootDir: backend
+    plan: starter # or free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # Supabase Cloud Database credentials
+      - key: DB_HOST
+        value: db.gqhaqiuqraggumqohvvv.supabase.co
+      - key: DB_PORT
+        value: 5432
+      - key: DB_USERNAME
+        value: postgres
+      - key: DB_PASSWORD
+        sync: false # Set Digiscale@123 in Render Dashboard
+      - key: DB_NAME
+        value: postgres
+      - key: DB_SSL
+        value: "true"
+      # JWT Secrets
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 30d
+      # CORS
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: BODY_LIMIT
+        value: 50mb
+      - key: MEDIA_BODY_LIMIT
+        value: 50mb
+
+  # ==========================================================
+  # 2. TEXA FRONTEND (Next.js 14 / React App)
+  # ==========================================================
+  - type: web
+    name: texa-frontend
+    runtime: node
+    rootDir: frontend
+    plan: starter # or free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Points to the backend API endpoint
+      - key: NEXT_PUBLIC_API_URL
+        sync: false # Set to https://<your-backend-name>.onrender.com/api in Render Dashboard
