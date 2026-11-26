@@ -1,8 +1,16 @@
 /**
- * Type declarations for modules without types
+ * Type declarations for modules without types or fallback declarations
  */
 
-// For jsonwebtoken if @types/jsonwebtoken is not available
+declare module "cors";
+declare module "cookie-parser";
+declare module "express-fileupload";
+declare module "node-cron";
+declare module "nodemailer";
+declare module "ws";
+declare module "bcrypt";
+declare module "multer";
+
 declare module "jsonwebtoken" {
   export interface JwtPayload {
     [key: string]: any;
@@ -25,5 +33,3 @@ declare module "jsonwebtoken" {
     options?: object
   ): null | { [key: string]: any } | string;
 }
-
-// Add other module declarations as needed
