@@ -47,7 +47,7 @@ const REFRESH_TOKEN_EXPIRY = "7d"; // 7 days
 const COOKIE_OPTIONS = {
   httpOnly: true, // Prevents JavaScript access
   secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production
-  sameSite: "strict" as const, // Restrict to same site to prevent CSRF
+  sameSite: (process.env.NODE_ENV === "production" ? "none" : "lax") as any, // Cross-domain compatible
   maxAge: 7 * 24 * 60 * 60 * 1000, // Match refresh token expiry (7 days)
   path: "/", // Available across the entire domain
 };
@@ -664,9 +664,10 @@ export class AuthController {
    */
   static async login(req: Request, res: Response) {
     try {
-      const { emailOrUsername, password, userType, rememberMe } = req.body;
+      const { emailOrUsername, username, email, password, userType, rememberMe } = req.body;
+      const identifier = emailOrUsername || username || email;
 
-      if (!emailOrUsername || !password) {
+      if (!identifier || !password) {
         res
           .status(400)
           .json({ message: "Email/username and password are required" });
@@ -676,7 +677,7 @@ export class AuthController {
       const userRepository = getRepository(User);
       // Find user by email or username
       const user = await userRepository.findOne({
-        where: [{ email: emailOrUsername }, { username: emailOrUsername }],
+        where: [{ email: identifier }, { username: identifier }],
         relations: ["organization"],
       });
 

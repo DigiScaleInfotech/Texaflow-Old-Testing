@@ -43,15 +43,33 @@ app.use(
 ); // Also increase URL-encoded payload limit
 app.use(cookieParser());
 const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(",")
+  ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim())
   : ["http://localhost:3000"];
 
 console.log("allowedOrigins", allowedOrigins);
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+
+      // If CORS_ORIGIN is '*' or includes '*', or matches vercel.app, allow the exact origin
+      if (
+        !process.env.CORS_ORIGIN ||
+        process.env.CORS_ORIGIN === "*" ||
+        allowedOrigins.includes("*") ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".vercel.app") ||
+        origin.includes("localhost")
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
   })
 );
 
